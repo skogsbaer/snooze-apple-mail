@@ -3,8 +3,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 logfile=$HOME/.snooze-apple-mail-unsnooze.log
 
-exit 0
-
 python3 "$DIR/src/tryUnsnooze.py" > "$logfile" 2>&1
 ecode=$?
 
