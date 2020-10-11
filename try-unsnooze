@@ -1,8 +1,11 @@
 #!/bin/bash
 
-logfile=/Users/swehr/.unsnooze.log
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+logfile=$HOME/.snooze-apple-mail-unsnooze.log
+
 exit 0
-$(dirname $0)/try-unsnooze.py > "$logfile" 2>&1
+
+python3 "$DIR/src/tryUnsnooze.py" > "$logfile" 2>&1
 ecode=$?
 
 if [ $ecode -ne 0 ]; then

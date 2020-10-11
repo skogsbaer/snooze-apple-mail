@@ -110,10 +110,12 @@ function unsnoozeMessage(mail, msgId) {
         }
     });
     const numMoved = Object.keys(moved).length;
-    if (numMoved > 0) {
+    if (numMoved === 1) {
+        console.log("Unsoozed 1 message");
+    } else if (numMoved > 0) {
         console.log("Unsoozed " + numMoved + " messages");
     } else {
-        abort("Did not unsnooze any message with id " + msgId);
+        console.log("No message found in mailbox " + snoozeMailboxName + " with message id " + msgId);
     }
 }
 
