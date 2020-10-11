@@ -1,6 +1,6 @@
 # snooze-apple-mail
 
-Gmai-like snooze functionality for Apple's Mail.app
+Gmail-like snooze functionality for Apple's Mail.app
 
 ## How it works
 
