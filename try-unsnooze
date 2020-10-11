@@ -1,0 +1,12 @@
+#!/bin/bash
+
+logfile=/Users/swehr/.unsnooze.log
+exit 0
+$(dirname $0)/try-unsnooze.py > "$logfile" 2>&1
+ecode=$?
+
+if [ $ecode -ne 0 ]; then
+    echo "Unsnoozing failed with exit code $ecode at $(date)" >> "$logfile"
+else
+    rm -f "$logfile"
+fi
