@@ -7,6 +7,8 @@ import json
 import pathlib
 import snoozeDb
 import time
+import timeSuggest
+import inputDateTime
 
 thisDir = pathlib.Path(__file__).parent.absolute()
 scriptPath = os.path.join(thisDir, 'mail.js')
@@ -55,11 +57,27 @@ def getSnoozedMsgIdsFromMail():
 def unsnoozeEmail(msgId):
     runScript('unsnooze-message', msgId, noResult=True)
 
+def askForSnoozeDate(infoLines):
+    now = time.time()
+    suggestions = timeSuggest.suggestTime(now)
+    return inputDateTime.enterDateTime(infoLines, suggestions)
+
 def snoozeMails(db):
     msgs = getSelectedMsgs()
     if len(msgs) == 0:
         abort("No messages selected in Mail.app")
-    wakeUp = 0 # FIXME: ask for date
+    infoLines = []
+    n = 2
+    if len(msgs) == n + 1:
+        n += 1
+    for i in range(n):
+        if i < len(msgs):
+            m = msgs[i]
+            infoLines.append(m['subject'] + ' (' + m['from'] + ')')
+    delta = len(msgs) - len(infoLines)
+    if delta > 0:
+        infoLines.append(f'({delta} more messages)')
+    wakeUp = askForSnoozeDate(infoLines)
     msgIds = []
     # We first add the mails to our DB. If the move in Mail.app then fails for some reasons,
     # we only have some superfluous mails in the DB. If we did it the other way round, then
@@ -71,8 +89,10 @@ def snoozeMails(db):
         msgIds.append(entry.msgId)
     moveMailsToSnoozed(msgIds)
 
-def tryUnsnooze(db):
+def tryUnsnooze(db, force):
     t = time.time()
+    if force:
+        t = sys.float_info.max
     entries = db.getEntries(t)
     if len(entries) == 0:
         print("No emails found that should be unsnoozed.")

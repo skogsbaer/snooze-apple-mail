@@ -105,6 +105,7 @@ function unsnoozeMessage(mail, msgId) {
     const moved = {};
     mailbox.messages().forEach(msg => {
         if (msgId == msg.messageId() && !moved[msgId]) {
+            msg.readStatus = false;
             mail.move(msg, {to: inbox});
             moved[msgId] = true;
         }

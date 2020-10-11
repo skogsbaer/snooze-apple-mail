@@ -1,13 +1,20 @@
 #!/bin/bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd -P )"
 logfile=$HOME/.snooze-apple-mail-unsnooze.log
 
-python3 "$DIR/src/tryUnsnooze.py" > "$logfile" 2>&1
-ecode=$?
+export PYTHONPATH=/usr/local/lib/python3.8/site-packages:$PYTHONPATH
+if [ -t 1 ] ; then
+    python3 "$DIR/src/tryUnsnooze.py" "$@" || exit 1
+    exit 0
+else
+    python3 "$DIR/src/tryUnsnooze.py" "$@" > "$logfile" 2>&1
+    ecode=$?
+fi
 
 if [ $ecode -ne 0 ]; then
     echo "Unsnoozing failed with exit code $ecode at $(date)" >> "$logfile"
+    cat "$logfile"
 else
     rm -f "$logfile"
 fi
